@@ -18,10 +18,6 @@ class Board
     new_board
   end
 
-  def build_empty_grid
-    @grid = Array.new(8) { Array.new(8) }
-  end
-
   def populate_board
     (5..7).each { |row| (0..7).each { |col| add_piece([row, col], :r) if col % 2 == (row + 1) % 2 } }
     (0..2).each { |row| (0..7).each { |col| add_piece([row, col], :b) if col % 2 == (row + 1) % 2 } }
@@ -58,4 +54,11 @@ class Board
     end
     output_string += "  0 1 2 3 4 5 6 7  \n"
   end
+
+  private
+  
+  def build_empty_grid
+    @grid = Array.new(8) { Array.new(8) }
+  end
+  
 end

@@ -8,6 +8,33 @@ class Piece
     @board = board
   end
 
+  def perform_moves(move_sequence)
+    if valid_move_seq?(move_sequence)
+      perform_moves!(move_sequence)
+    else raise InvalidMoveError.new("Invalid move sequence.")
+    end
+    nil
+  end
+
+  def attempt_move(target_pos)
+    if valid_slide?(target_pos)
+      perform_slide!(target_pos)
+    elsif valid_jump?(target_pos)
+      perform_jump!(target_pos)
+    else raise InvalidMoveError.new("Not a valid slide or jump.")
+    end
+  end
+
+  def to_s
+    if self.king
+      @color == :r ? "R" : "B"
+    else
+      @color == :r ? "r" : "b"
+    end
+  end
+
+  private
+
   def try_promotion
     self.king = true if (self.pos[0] == 0 && self.color == :r) 
     self.king = true if (self.pos[0] == 7 && self.color == :b)
@@ -22,68 +49,6 @@ class Piece
     elsif move_type == "jump"
       self.king ? jump_diffs[:r] + jump_diffs[:b] : jump_diffs[self.color]
     else raise "Invalid input to move_diffs - must be 'slide' or 'jump'"
-    end
-  end
-
-  def move!(target_pos)
-    board[target_pos] = self
-    board[self.pos] = nil
-    self.pos = target_pos
-    self.try_promotion
-  end
-
-  def valid_move_seq?(move_sequence)
-    begin
-      temp_piece = self.dup
-      temp_board = @board.dup
-      temp_piece.board = temp_board
-      temp_piece.perform_moves!(move_sequence)
-    rescue InvalidMoveError => e
-      puts e
-      false
-    else
-      true
-    end
-  end
-
-  def perform_moves(move_sequence)
-    if valid_move_seq?(move_sequence)
-      perform_moves!(move_sequence)
-    else raise InvalidMoveError.new("Invalid move sequence.")
-    end
-    nil
-  end
-
-  def perform_moves!(move_sequence)
-    if move_sequence.length > 1
-      if valid_slide?(move_sequence[0])
-        raise InvalidMoveError.new("Cannot move again after initially sliding.")
-      
-      elsif valid_jump?(move_sequence[0])
-        perform_jump(move_sequence[0])
-        
-        move_sequence[1..-1].each do |target_pos|
-          if valid_jump?(target_pos)
-            perform_jump(target_pos)
-          else raise InvalidMoveError.new("All moves in sequence after the first must be valid jumps.")
-          end
-        end
-
-      else raise InvalidMoveError.new("First move is not a valid slide or jump.")
-      end
-
-    else
-      attempt_move(move_sequence[0])
-    end
-    nil
-  end
-
-  def attempt_move(target_pos)
-    if valid_slide?(target_pos)
-      perform_slide!(target_pos)
-    elsif valid_jump?(target_pos)
-      perform_jump!(target_pos)
-    else raise InvalidMoveError.new("Not a valid slide or jump.")
     end
   end
 
@@ -120,11 +85,49 @@ class Piece
     jumped_pos = [start_pos[0] + diff[0] / 2, start_pos[1] + diff[1] / 2]   
   end
 
-  def to_s
-    if self.king
-      @color == :r ? "R" : "B"
+  def perform_moves!(move_sequence)
+    if move_sequence.length > 1
+      if valid_slide?(move_sequence[0])
+        raise InvalidMoveError.new("Cannot move again after initially sliding.")
+      
+      elsif valid_jump?(move_sequence[0])
+        perform_jump!(move_sequence[0])
+        
+        move_sequence[1..-1].each do |target_pos|
+          if valid_jump?(target_pos)
+            perform_jump!(target_pos)
+          else raise InvalidMoveError.new("All moves in sequence after the first must be valid jumps.")
+          end
+        end
+
+      else raise InvalidMoveError.new("First move is not a valid slide or jump.")
+      end
+
     else
-      @color == :r ? "r" : "b"
+      attempt_move(move_sequence[0])
+    end
+    nil
+  end
+
+  def valid_move_seq?(move_sequence)
+    begin
+      temp_piece = self.dup
+      temp_board = @board.dup
+      temp_piece.board = temp_board
+      temp_piece.perform_moves!(move_sequence)
+    rescue InvalidMoveError => e
+      puts e
+      false
+    else
+      true
     end
   end
+
+  def move!(target_pos)
+    board[target_pos] = self
+    board[self.pos] = nil
+    self.pos = target_pos
+    self.try_promotion
+  end
+  
 end

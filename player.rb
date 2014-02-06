@@ -31,6 +31,8 @@ class HumanPlayer < Player
     end
   end
 
+  private
+
   def get_starting_piece
     puts "Please enter the coordinates of the piece you wish to move.  (Format:  '5, 3')"
     start_pos = get_input
