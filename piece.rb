@@ -16,12 +16,20 @@ class Piece
   def move_diffs(move_type)
     slide_diffs = { :b => [[1, 1], [1, -1]], :r => [[-1, 1], [-1, -1]] }
     jump_diffs = { :b => [[2, 2], [2, -2]], :r => [[-2, 2], [-2, -2]] }
+
     if move_type == "slide"
       self.king ? slide_diffs[:r] + slide_diffs[:b] : slide_diffs[self.color]
     elsif move_type == "jump"
       self.king ? jump_diffs[:r] + jump_diffs[:b] : jump_diffs[self.color]
     else raise "Invalid input to move_diffs - must be 'slide' or 'jump'"
     end
+  end
+
+  def move!(target_pos)
+    board[target_pos] = self
+    board[self.pos] = nil
+    self.pos = target_pos
+    self.try_promotion
   end
 
   def valid_move_seq?(move_sequence)
@@ -50,16 +58,20 @@ class Piece
     if move_sequence.length > 1
       if valid_slide?(move_sequence[0])
         raise InvalidMoveError.new("Cannot move again after initially sliding.")
+      
       elsif valid_jump?(move_sequence[0])
         perform_jump(move_sequence[0])
+        
         move_sequence[1..-1].each do |target_pos|
           if valid_jump?(target_pos)
             perform_jump(target_pos)
           else raise InvalidMoveError.new("All moves in sequence after the first must be valid jumps.")
           end
         end
+
       else raise InvalidMoveError.new("First move is not a valid slide or jump.")
       end
+      
     else
       attempt_move(move_sequence[0])
     end
@@ -73,13 +85,6 @@ class Piece
       perform_jump(target_pos)
     else raise InvalidMoveError.new("Not a valid slide or jump.")
     end
-  end
-
-  def move!(target_pos)
-    board[target_pos] = self
-    board[self.pos] = nil
-    self.pos = target_pos
-    self.try_promotion
   end
 
   def perform_slide(target_pos)

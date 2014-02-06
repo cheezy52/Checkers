@@ -17,6 +17,7 @@ class Game
   def play
     until over?
       puts @board
+      puts "It is #{@current_player} (#{@current_player.color == :r ? "Red" : "Black"})'s turn."
       @current_player.take_turn
       @current_player = (@current_player == @red_player ? @black_player : @red_player)
     end
