@@ -11,13 +11,9 @@ class Player
   end
 end
 
-class HumanPlayer < Player
-  INVALID_POSITION_ERROR = InvalidInputError.new("That is not a valid coordinate pair.")
-  NO_PIECE_ERROR =  InvalidInputError.new("There is no piece at that square.")
-  WRONG_COLOR_ERROR = InvalidInputError.new("That is not your piece.")
 
+class HumanPlayer < Player
   def take_turn
-    debugger
     begin
       piece = get_starting_piece
       move_seq = get_move_sequence(piece)
