@@ -39,6 +39,16 @@ class Board
     @grid[pos[0]][pos[1]] = arg
   end
 
+  def all_pieces
+    pieces = []
+    @grid.each do |row|
+      row.each do |piece|
+        pieces << piece unless piece.nil?
+      end
+    end
+    pieces
+  end
+
   def to_s
     output_string = "\n  0 1 2 3 4 5 6 7  \n"
     (0..7).each do |row|

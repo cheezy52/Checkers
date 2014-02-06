@@ -1,6 +1,3 @@
-class InvalidMoveError < ArgumentError
-end
-
 class Piece
   attr_reader :color
   attr_accessor :king, :pos, :board
@@ -63,6 +60,8 @@ class Piece
         end
       else raise InvalidMoveError.new("First move is not a valid slide or jump.")
       end
+    else
+      attempt_move(move_sequence[0])
     end
     nil
   end
