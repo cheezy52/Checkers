@@ -52,7 +52,7 @@ class Board
       (0..7).each { |col| self[[row, col]].nil? ? output_string += "  " : output_string += "#{self[[row, col]].to_s} " }
       output_string += "#{row}\n"
     end
-    output_string += "  0 1 2 3 4 5 6 7  \n"
+    output_string += "  0 1 2 3 4 5 6 7  \n\n"
   end
 
   private
@@ -60,5 +60,5 @@ class Board
   def build_empty_grid
     @grid = Array.new(8) { Array.new(8) }
   end
-  
+
 end

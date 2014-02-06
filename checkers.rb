@@ -22,11 +22,11 @@ class Game
       @current_player = (@current_player == @red_player ? @black_player : @red_player)
     end
     puts @board
-    puts "#{winner} wins!"
+    puts "#{winner} (#{@current_player.color == :r ? "Red" : "Black"}) wins!"
   end
 
   def over?
-    @board.all_pieces.all? { |piece| piece.color == @board.all_pieces[0]}
+    @board.all_pieces.all? { |piece| piece.color == @board.all_pieces[0].color}
   end
 
   def winner
