@@ -71,7 +71,7 @@ class Piece
 
       else raise InvalidMoveError.new("First move is not a valid slide or jump.")
       end
-      
+
     else
       attempt_move(move_sequence[0])
     end
@@ -80,29 +80,21 @@ class Piece
 
   def attempt_move(target_pos)
     if valid_slide?(target_pos)
-      perform_slide(target_pos)
+      perform_slide!(target_pos)
     elsif valid_jump?(target_pos)
-      perform_jump(target_pos)
+      perform_jump!(target_pos)
     else raise InvalidMoveError.new("Not a valid slide or jump.")
     end
   end
 
-  def perform_slide(target_pos)
-    if valid_slide?(target_pos)
-      move!(target_pos)
-    else raise InvalidMoveError.new("This is not a valid slide.")
-    end
-    nil
+  def perform_slide!(target_pos)
+    move!(target_pos)
   end
 
-  def perform_jump(target_pos)
-    if valid_jump?(target_pos)
-      jumped_pos = get_jumped_pos(self.pos, target_pos)
-      move!(target_pos)
-      board[jumped_pos] = nil
-    else raise InvalidMoveError.new("This is not a valid jump.")
-    end
-    nil
+  def perform_jump!(target_pos)
+    jumped_pos = get_jumped_pos(self.pos, target_pos)
+    move!(target_pos)
+    board[jumped_pos] = nil
   end
 
   def valid_slide?(target_pos)
