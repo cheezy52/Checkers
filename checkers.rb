@@ -2,10 +2,12 @@ require_relative "errors"
 require_relative "piece"
 require_relative "board"
 require_relative "player"
+require_relative "human_player"
+require_relative "computer_player"
 
 class Game
   attr_accessor :board, :current_player, :red_player, :black_player
-  def initialize(red_player = HumanPlayer.new(self, "Alice"), black_player = HumanPlayer.new(self, "Bob"))
+  def initialize(red_player = HumanPlayer.new(self, "Alice"), black_player = ComputerPlayer.new(self, "HAL 9000"))
     @red_player = red_player
     @red_player.color = :r
     @black_player = black_player
@@ -17,12 +19,12 @@ class Game
   def play
     until over?
       puts @board
-      puts "It is #{@current_player} (#{@current_player.color == :r ? "Red" : "Black"})'s turn."
+      puts "It is #{@current_player}'s turn."
       @current_player.take_turn
       @current_player = (@current_player == @red_player ? @black_player : @red_player)
     end
     puts @board
-    puts "#{winner} (#{@current_player.color == :r ? "Red" : "Black"}) wins!"
+    puts "#{winner} wins!"
   end
 
   def over?

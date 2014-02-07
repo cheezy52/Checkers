@@ -11,7 +11,7 @@ class Board
     @grid.each_with_index do |row, row_index|
       row.each_with_index do |piece, col_index|
         unless piece.nil?
-          new_board.add_piece([row_index, col_index], piece.color)
+          new_board.add_piece([row_index, col_index], piece.color, piece.king)
         end
       end
     end
@@ -23,8 +23,9 @@ class Board
     (0..2).each { |row| (0..7).each { |col| add_piece([row, col], :b) if col % 2 == (row + 1) % 2 } }
   end
 
-  def add_piece(pos, color)
+  def add_piece(pos, color, king=false)
     self[pos] = Piece.new(pos, color, self)
+    self[pos].king = true if king
   end
 
   def [](pos)
