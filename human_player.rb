@@ -16,7 +16,7 @@ class HumanPlayer < Player
   private
 
   def get_starting_piece
-    puts "Please enter the coordinates of the piece you wish to move.  (Format:  '5, 3')"
+    puts "Please enter the square of the piece you wish to move.  (Format:  'a4')"
     start_pos = get_input
     raise INVALID_POSITION_ERROR unless valid_position?(start_pos)
     raise NO_PIECE_ERROR if @game.board[start_pos].nil?
@@ -30,9 +30,9 @@ class HumanPlayer < Player
     puts "Please enter the sequence of moves you would like this piece to undertake."
     move_seq = []
     while true
-      puts "Enter the next position for this piece to move to, or Enter to finish.  (Format: '5, 3')"
+      puts "Enter the next square for this piece to move to, or Enter to finish.  (Format: 'a4')"
       target_pos = get_input
-      break if target_pos == []
+      break if target_pos.nil?
       raise INVALID_POSITION_ERROR unless valid_position?(target_pos)
       move_seq << target_pos
     end
@@ -45,13 +45,18 @@ class HumanPlayer < Player
   end
 
   def parse_input(input)
-    input.chomp.gsub(" ", "").split(",").map { |num| num.to_i }
+    return nil if input == ""
+    cols = {"a" => 0, "b" => 1, "c" => 2, "d" => 3, "e" => 4, "f" => 5, "g" => 6, "h" => 7}
+    raw_coords = input.chomp
+    row = 8 - raw_coords[1].to_i
+    col = cols[raw_coords[0]]
+    [row, col]
   end
 
-  def valid_position?(input)
-    return false if input.length != 2
-    return false if input.any? { |entry| entry.class != Fixnum }
-    return false if input.any? { |entry| entry < 0 || entry > 7}
+  def valid_position?(pos)
+    return false if pos.length != 2
+    return false if pos.any? { |entry| entry.class != Fixnum }
+    return false if pos.any? { |entry| entry < 0 || entry > 7}
     true
   end
 end

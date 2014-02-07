@@ -47,13 +47,13 @@ class Board
   end
 
   def to_s
-    output_string = "\n  0 1 2 3 4 5 6 7  \n"
+    output_string = "\n  a b c d e f g h  \n"
     (0..7).each do |row|
-      output_string += "#{row} "
+      output_string += "#{8 - row} "
       (0..7).each { |col| self[[row, col]].nil? ? output_string += "  " : output_string += "#{self[[row, col]].to_s} " }
-      output_string += "#{row}\n"
+      output_string += "#{8 - row}\n"
     end
-    output_string += "  0 1 2 3 4 5 6 7  \n\n"
+    output_string += "  a b c d e f g h  \n\n"
   end
 
   private
